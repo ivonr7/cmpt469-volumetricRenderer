@@ -16,7 +16,7 @@ def main(mitsuba_xml:str,output_folder:str,
           }
      )
      # Render the scene
-     image = mi.render(scene,integrator=integrator, spp=256)
+     image = mi.render(scene,integrator=integrator, spp=spp)
 
      # Save the output
      mi.util.write_bitmap(os.path.join(output_folder,filename), image)
