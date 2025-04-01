@@ -1,6 +1,6 @@
 *.exr
 *.png
-output
+*output*
 
 
 # Byte-compiled / optimized / DLL files
