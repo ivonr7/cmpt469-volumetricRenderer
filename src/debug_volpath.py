@@ -1,7 +1,29 @@
 import mitsuba as mi
+mi.set_variant('llvm_ad_rgb')
+from mitsuba import ScalarTransform4f as T
+
 from argparse import ArgumentParser
 import os
-
+def create_sensor(sampler:str = 'independent',sc:int = 16,sensor_params:dict = None):
+     transform = sensor_params['to_world'].matrix
+     return mi.load_dict({
+        'type': 'perspective',
+        'fov': sensor_params['x_fov'],
+        'to_world': None,
+        'sampler': {
+            'type': sampler,
+            'sample_count': sc
+        },
+        'film': {
+            'type': 'hdrfilm',
+            'width': sensor_params['film.size'][0],
+            'height': sensor_params['film.size'][0],
+            'rfilter': {
+                'type': 'tent',
+            },
+            'pixel_format': 'rgb',
+        },
+    })
 def main(mitsuba_xml:str,output_folder:str,
          *,spp:int = 256,depth:int = 8,accel:str = 'cuda_ad_rgb',
          filename:str = None):
@@ -15,6 +37,7 @@ def main(mitsuba_xml:str,output_folder:str,
            "max_depth":depth
           }
      )
+     sensor_params = mi.traverse(scene.sensors()[0])
      # Render the scene
      image = mi.render(scene,integrator=integrator, spp=spp)
 
