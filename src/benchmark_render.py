@@ -14,10 +14,13 @@ def time_render(func:Callable) -> Callable:
 
 
 
-def relative_entropy(render:np.ndarray,baseline:np.ndarray) -> float:
-    render,render_bins = np.histogram(render.flatten())
-    baseline,baseline_bins = np.histogram(baseline.flatten())
-    return entropy(render,baseline)
+def imentropy(render:np.ndarray,bins = 256):
+    if render.shape[2] == 3: render = (0.2989*render[:,:,0] +\
+                                        0.587*render[:,:,1] +\
+                                        0.114*render[:,:,2]).squeeze()
+    hist, _ = np.histogram(render,bins=256)
+    prob = hist / np.sum(hist) 
+    return entropy(prob,base=2)
 
 if __name__ == "__main__":
     @time_render
@@ -25,8 +28,8 @@ if __name__ == "__main__":
         for _ in range(1_000_000):
             continue
     
-
-    print(relative_entropy(np.random.normal(0,10,size=(300,300)),np.random.normal(0,1,size=(300,300))))
-    long_func()
+    a = np.abs(np.random.normal(0,5,size=(300,300,3)))
+    print(a[0,0])
+    print(imentropy(a))
     
         
